@@ -48,15 +48,15 @@ void getPercentRate(int numPeople, Person *personArr){
 }
 
 int calcFax(int numPeople, Person *personArr){
-  double fax = 0;
+  int fax = 0;
   getPercentRate(numPeople, personArr);
   for (int i = 0 ; i < numPeople ; i++){
     fax += personArr[i].rate * personArr[i].income;
   }
-  return round(fax);
+  return fax;
 }
 
-cmpIncome (const void *a, const void *b){
+int cmpIncome (const void *a, const void *b){
   Person *A = (Person *) a;
   Person *B = (Person *) b;
   
@@ -79,6 +79,5 @@ int main (){
     printf("%d\n",fax);
   }
 
-  system("PAUSE");
   return 0;
 }

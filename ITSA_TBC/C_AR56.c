@@ -24,33 +24,81 @@ char **init(int size){
 
 int boundaryCheck(Pos curMatch, int size, int direction){
   if (direction == 0)       // Up
-    return curMatch.x < size && curMatch.y - 1 < size &&
-           curMatch.x >= 0   && curMatch.y - 1 >= 0;
+    return curMatch.x - 1< size && curMatch.y < size &&
+           curMatch.x - 1 >= 0   && curMatch.y >= 0;
   else if (direction == 1)  // Right
-    return curMatch.x + 1 < size && curMatch.y  < size &&
-           curMatch.x + 1 >= 0   && curMatch.y  >= 0;
-  else if (direction == 2)  // Down
     return curMatch.x < size && curMatch.y + 1 < size &&
            curMatch.x >= 0   && curMatch.y + 1 >= 0;
+  else if (direction == 2)  // Down
+    return curMatch.x + 1 < size && curMatch.y < size &&
+           curMatch.x + 1 >= 0   && curMatch.y >= 0;
   else if (direction == 3)  // Left
-    return curMatch.x - 1 < size && curMatch.y < size &&
-           curMatch.x - 1 >= 0   && curMatch.y >= 0;
+    return curMatch.x < size && curMatch.y - 1 < size &&
+           curMatch.x >= 0   && curMatch.y - 1 >= 0;
+}
+
+Pos getPos(Pos pos, int direction){
+  if (direction == 0)      // Up
+    pos.x--;       
+  else if (direction == 1) // Right
+    pos.y++;
+  else if (direction == 2) // Down
+    pos.x++;
+  else if (direction == 3) // Left
+    pos.y--;
+
+  return pos;
 }
 
 int compare(int size, char** mtx, char *target, Pos *firstMatch, int curMatch){
-  int len = strlen(target);
-  int curLen = 2;
+  int** visited = malloc(sizeof(int*) * size);
+  for(int i = 0 ; i < size ; i++)
+    visited[i] = malloc(sizeof(int) * size);
+  for(int i = 0 ; i < size ; i++)
+    for(int j = 0 ; j < size ; j++)
+      visited[i][j] = 0;
+
   char* curSubString = malloc(sizeof(char) * 101);
   memset(curSubString, '\0', 101);
+  curSubString[0] = target[0];
+
+  int len = strlen(target);
+  int curLen = 2;
+  Pos curPos = firstMatch[curMatch];
+  Pos lastPos;
+  visited[curPos.x][curPos.y] = 1;
+
 
   while (curLen <= len){
     for (int i = 0; i < 4 ; i++){
-      if (boundaryCheck(firstMatch[curMatch], size, i)){
-
-
+      if (boundaryCheck(curPos, size, i)){
+        lastPos = curPos;
+        curPos = getPos(curPos, i);
+        if (!visited[curPos.x][curPos.y]){
+          visited[curPos.x][curPos.y] = 1;
+          curSubString[curLen - 1] = mtx[curPos.x][curPos.y];
+          if (strncmp(curSubString, target, curLen) == 0){
+            curLen++;
+            i = -1;
+            if (curLen == len + 1){
+              return 1;
+            }
+          }
+          else{
+            visited[curPos.x][curPos.y] = 0;
+            curPos = lastPos;
+            if (i == 3)
+              return 0;
+          }
+        }
+        else {
+          curPos = lastPos;
+        }
       }
     }
+    return 0;
   }
+  return 0;
 }
 
 int solve(int size, char** mtx, char *target){
@@ -94,6 +142,5 @@ int main (){
       printf("no\n");
   }
 
-  system("PAUSE");
   return 0;
 }

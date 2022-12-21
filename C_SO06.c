@@ -6,7 +6,7 @@ typedef struct{
   int eng,math;
 } Grade;
 
-cmpGrade(const void *a, const void *b){
+int cmpGrade(const void *a, const void *b){
   Grade *A = (Grade*) a;
   Grade *B = (Grade*) b;
 
@@ -36,6 +36,5 @@ int main(){
     printf("%d %d %d\n",class[i].id ,class[i].math ,class[i].eng);
   }
 
-  system("PAUSE");
   return 0;
 }

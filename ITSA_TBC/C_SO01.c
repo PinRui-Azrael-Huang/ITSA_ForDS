@@ -37,23 +37,27 @@ int main (){
     qsort(lines, numLine, sizeof(Line), cmpPoint);
 
     int overlap = 0;
-    for(int k = 0 ; k < numLine - 1; k++){
+    for(int max = 0, k = 0; max < numLine - 1; max++){
       int origin = k;
+
+      // Overlapping
       while (lines[k].rear > lines[k+1].front){
         if (k + 1 >= numLine)
           break;
-        k++;
+
+        k++, max++;
       }
-      // TODO 全部線段重疊問題
+      while (lines[k].rear <  lines[k-1].rear)
+        k--;
+
       overlap = (lines[k].rear - lines[origin].front);
-      if (overlap)
       len += overlap;
       overlap = 0;
+
       if (k + 1 == numLine - 1){
         len += (lines[k+1].rear - lines[k+1].front);
       }
     }
-
     printf("%d\n",len);
   }
 
